@@ -1,0 +1,43 @@
+    <!-- Custom styles for this template -->
+    <link href="signing.css" rel="stylesheet" />
+
+
+<div id="UserPasswordDiv">
+
+    <div class="containerrrr">
+
+      <form class="form-signin" role="form" ng-submit="login()" style="text-align:center">
+		<ul class="nav nav-pills nav-justified">
+		  <li role="presentation" class="{{signInTabClass}}"><a href="#/login">משתמש קיים</a></li>
+		  <li role="presentation" class="{{signUpTabClass}}"><a href="#/login/new">משתמש חדש</a></li>
+		</ul>
+        <h2 class="form-signin-heading">{{loginHeading}}</h2>
+        <label for="UserText" class="sr-only">דוא&quot;ל</label>
+        <input type="email" id="UserText" class="form-control" placeholder="דוא&quot;ל" required="" autofocus="" ng-model="userName" />
+        <label for="PasswordText" class="sr-only">סיסמא</label>
+        <input type="password" id="PasswordText" class="form-control" placeholder="סיסמא" required="" ng-model="userPassword" />
+        <label for="ConfirmPasswordText" class="sr-only">אמת סיסמא</label>
+		<input type="password" id="ConfirmPasswordText" class="form-control" placeholder="אמת סיסמא" ng-show="isNew" />
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{submitButtonLabel}}</button>
+      </form>
+
+    </div>
+</div>
+
+<div id="loginErrorDiv"/>
+
+<script language="javascript">
+	var password = document.getElementById("PasswordText")
+  , confirm_password = document.getElementById("ConfirmPasswordText");
+
+function validatePassword(){
+  if(password.value != confirm_password.value && ! $("#ConfirmPasswordText").is(':hidden')) {
+    confirm_password.setCustomValidity("הסיסמאות לא תואמות");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+</script>
