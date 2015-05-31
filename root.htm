@@ -1,0 +1,48 @@
+    <!doctype html>
+    <html lang="he" ng-app="learningGames">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<!-- jQuery -->
+	<!--script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"> </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"> </script>
+    <script src="js/controller.js"></script>
+	
+	<!-- Bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+	
+	  <div class="container">
+<div>
+
+	
+<nav class="navbar navbar-default" style="margin:0">
+    <div class="navbar-header pull-right">
+      <a class="navbar-brand" href="#/">
+        <img alt="Brand" src="img/learning games.ico">
+      </a>
+    </div>
+	<div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
+        <p class="navbar-text">שלום <a href="#/login" class="navbar-link" id="userLoginLink">אורח</a></p>
+    </div><!-- /.navbar-collapse -->
+</nav>
+    <div ng-view></div>
+	
+	</div>
+</div>
+    </body>
+    </html>
+
