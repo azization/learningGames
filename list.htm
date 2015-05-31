@@ -1,0 +1,18 @@
+
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">ה{{listItemTypePlural}} שלי</a></li>
+  <li role="presentation"><a href="#">Profile</a></li>
+  <li role="presentation"><a href="#">Messages</a></li>
+</ul>
+
+    <div class="row">
+      <div class="col-xs-6 col-md-3" ng-repeat="(index, name) in items">
+        <a ng-href="{{itemChosen(name)}}" class="thumbnail">
+          <img src="http://istanbul29may.files.wordpress.com/2011/10/treasure-box.jpg" alt="Generic placeholder thumbnail">
+		  <div class="caption">
+			<h3>{{name}}</h3>
+		  </div>
+        </a>
+      </div>
+    </div>
