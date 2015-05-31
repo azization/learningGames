@@ -1,0 +1,71 @@
+
+<div id="messageContainer" class="alert alert-{{alert.mode}}" role="alert" style="direction:rtl;vertical-align:middle;margin:0">
+
+<strong>{{alert.message}}</strong>
+
+</div>
+
+<div class="panel panel-primary" style="direction:rtl;margin:0">
+  <div class="panel-heading">
+  
+
+  <div>
+  <table style="width:100%;margin:0"><tr style="direction:rtl">
+	  <td style="width:10%;text-aligh:right"><a href="" ng-click="displayQuestion(-1)" role="button" class="btn btn-info" style="display:{{shown('Prev')}}"><span>&rarr;</span></a></td>
+	  <td style="width:80%">שאלה {{questDisplayIndex}} - שאלון: <a role="button" class="btn btn-info" href="#/questList">{{questionaire.name}}</a></td>
+	  <td style="width:10%"><a href="" ng-click="displayQuestion(1)" role="button" class="btn btn-info {{nextButtonSize}}"><span style="display:{{shown('Next')}}">&larr;</span><span style="display:{{shown('Restart')}}">&lt;&lt;</span></a></td>
+	  </table></tr>
+	 </div>
+  </div>
+  
+
+  <div class="panel-body" style="direction:rtl;padding:0">
+ 
+	<table style="direction:rtl;margin:0" id="questTable" class="table table-striped">
+		<thead>
+			<tr>
+				<td style="width:10%"/>
+				<td style="width:90%;text-align:right">{{question}}</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="answer in answers" class="{{answerRowClasses[answer.index]}}"  ng-click="tryAnswer(answer.index)">
+				<th scope="row">{{answer.key}}</th>
+				<td>{{answer.value}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</div>
+<div class="panel panel-primary" style="direction:rtl">
+  <div class="panel-heading">
+  <div class="row">
+	  <div class="col-xs-2"></div>
+	  <div class="col-xs-8">המשחק הנבחר: <a role="button" class="btn btn-info" href="#/gameList">{{game.name}}</a></div>
+	  <div class="col-xs-2"></div>
+	 </div>
+  </div>
+  <div class="panel-body" style="direction:rtl;padding:0">
+  <!--div class="container-fluid" style="direction:rtl;text-align:center"-->
+  <table style="width:100%;text-aligh:center"><tr>
+  <td ng-repeat="answer in answers" style="padding:0;text-align:center">
+	  <a href="" ng-click="tryAnswer(answer.index)" role="button" class="btn" style="padding:0">
+	  <div id="answerImageDiv{{answer.index}}">
+     <img class="img-thumbnail" ng-src="{{game.imagesSrc[answer.index]}}" alt="question image" style="width:100%;max-width:{{answerImageMaxWidth}}px" >
+     <!--img class="right-image img-thumbnail" ng-src="{{game.rightImage.src}}" alt="right image" style="display:none" width="100" height="100">
+     <img class="wrong-image img-thumbnail" ng-src="{{game.wrongImage.src}}" alt="wrong image" style="display:none" width="100" height="100"-->
+	 </div>
+      <div class="caption" style="padding:0">
+        <h3 style="margin:0">{{answer.key}}</h3>
+      </div>
+	  </a>
+  </td>
+  </tr></table>
+<!--/div-->
+
+
+
+
+  </div>
+</div>
+
