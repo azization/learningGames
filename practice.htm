@@ -13,7 +13,7 @@
   <table style="width:100%;margin:0"><tr style="direction:rtl">
 	  <td style="width:10%;text-aligh:right"><a href="" ng-click="displayQuestion(-1)" role="button" class="btn btn-info" style="display:{{shown('Prev')}}"><span>&rarr;</span></a></td>
 	  <td style="width:80%">שאלה {{questDisplayIndex}} - שאלון: <a role="button" class="btn btn-info" href="#/questList">{{questionaire.name}}</a></td>
-	  <td style="width:10%"><a href="" ng-click="displayQuestion(1)" role="button" class="btn btn-info {{nextButtonSize}}"><span style="display:{{shown('Next')}}">&larr;</span><span style="display:{{shown('Restart')}}">&lt;&lt;</span></a></td>
+	  <td style="width:10%"><a href="" ng-click="questButtonClicked()" role="button" class="btn btn-info {{nextButtonSize}}"><span style="display:{{shown('Help')}}">?</span><span style="display:{{shown('Next')}}">&larr;</span><span style="display:{{shown('Restart')}}">&lt;&lt;</span></a></td>
 	  </table></tr>
 	 </div>
   </div>
