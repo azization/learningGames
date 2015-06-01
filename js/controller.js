@@ -139,16 +139,14 @@ angular.module('learningGames', ['ngRoute'])
 
 	$scope.shown =function(compName)
 	{
-		if (compName == "Prev" && questionaire.questIndex == 0)
-				return "none";
+		var lastQuestion = questionaire.questIndex >= questionaire.questions.length -1;
+		if (compName == "Prev")
+			return questionaire.questIndex == 0? "none" : "inherit";
 
-		if (compName == "Next" && questionaire.questIndex >= questionaire.questions.length -1)
-				return "none";
-				
-		if (compName == "Restart" && questionaire.questIndex !=  questionaire.questions.length -1)
-				return "none";
-
-		return "inherit";
+		var shownButton = $scope.state != "tryAnswer"? "Help" :
+							lastQuestion? "Restart" : "Next";
+							
+		return compName == shownButton? "inherit" : "none";
 	};
 	
 	$scope.tryAnswer = function(index)
@@ -187,7 +185,20 @@ angular.module('learningGames', ['ngRoute'])
 			});
 			parentDiv.fadeIn(140, 'swing');
 		});
-	}
+	};
+	
+	$scope.highlightRightAnswer = function()
+	{
+		$scope.answerRowClasses[$scope.rightIndex] = "success";
+	};
+
+	$scope.questButtonClicked = function()
+	{
+		if ($scope.shown("Help"))
+			$scope.highlightRightAnswer();
+		else
+			$scope.displayQuestion(1);
+	};
 	
 }])
 .controller('questListCtrl', function($scope) {
