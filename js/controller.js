@@ -117,6 +117,15 @@ angular.module('learningGames', ['ngRoute'])
 	loadItemInto("questions", questionaire.name, function(data){
 		$scope.$apply(function(){
 			questionaire.questions = data;
+			//if all answers are shorter than 10 characters - we can display images in the same line as the answers
+			var maxLen = 0;
+			for (var index = 0; index < questionaire.questions.length; index++)
+			{
+				var q = questionaire.questions[index];
+				maxLen = Math.max(q.Answer.length, q.Wrong1.length, q.Wrong2.length, q.Wrong3.length);
+			}
+			$scope.displayImageWithAnswer = maxLen < 10;
+			//display first question
 			$scope.displayQuestion(0);
 		});
 	});
@@ -141,12 +150,12 @@ angular.module('learningGames', ['ngRoute'])
 	{
 		var lastQuestion = questionaire.questIndex >= questionaire.questions.length -1;
 		if (compName == "Prev")
-			return questionaire.questIndex == 0? "none" : "inherit";
+			return questionaire.questIndex != 0;
 
 		var shownButton = $scope.state != "tryAnswer"? "Help" :
 							lastQuestion? "Restart" : "Next";
 							
-		return compName == shownButton? "inherit" : "none";
+		return compName == shownButton;
 	};
 	
 	$scope.tryAnswer = function(index)
@@ -160,7 +169,7 @@ angular.module('learningGames', ['ngRoute'])
 		$scope.nextButtonSize = "btn-lg";
 		
 		//var parentDiv = $(event.currentTarget).find(".question-image").parent();
-		var parentDiv = $("#answerImageDiv" + index);
+		var parentDiv = $("#answerImageDiv" + ($scope.displayImageWithAnswer? "-Inline-" : "") + index);
 		parentDiv.fadeOut(140, 'swing', function(){
 			//$(event.currentTarget).find(".question-image").hide();
 			$scope.$apply(function() {
