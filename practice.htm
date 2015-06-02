@@ -69,10 +69,16 @@
   </td>
   </tr></table>
 <!--/div-->
-
-
-
-
   </div>
-</div>
+
+  <div class="panel-body" ng-show="showPuzzle()" ng-click="puzzleTryAnswer(rightIndex)" id="puzzleDiv">
+  <table style="width:200px;height:200px;text-aligh:center;background: url({{game.rightImage.src}});background-size: 100% 100%;background-repeat: no-repeat" cellspacing="0" cellpadding="0" border="0">
+  <tr ng-repeat="row in [1,2,3,4]">
+  <td ng-repeat="col in [1,2,3,4,5]" style="padding:0;text-align:center;background-color:{{isPuzzleCellRevealed(row,col)? '' : 'white'}}">
+	  <div ng-style="{'visibility': isPuzzleCellRevealed(row,col)? 'hidden' : 'visible', 'background-color': 'yellow', 'width':'80%', 'height': '100%'}">?</div>
+  </td>
+  </tr></table>	
+  </div>
+  
+  </div>
 
