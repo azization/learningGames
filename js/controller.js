@@ -72,7 +72,16 @@ angular.module('learningGames', ['ngRoute'])
 
 		//in case of restart questions
 		if (questionaire.questIndex < 0 || questionaire.questIndex >= questionaire.questions.length)
+		{
 			questionaire.questIndex = 0;
+		}
+		if (questionaire.questIndex == 0)
+		{
+			//TODO: better handle "previous" button - decreasing only previous correct answers
+			questionaire.numberOfCorrectAnswers = 0;
+			$scope.puzzleRestart();
+		}
+
 		
 		if (!$scope.alert || $scope.alert.mode != "info")
 		{
@@ -130,6 +139,7 @@ angular.module('learningGames', ['ngRoute'])
 		});
 	});
 
+	
 	loadItemInto("game", $scope.game.name, function(data){
 		$scope.$apply(function(){
 			//$scope.game.questImage.src = "http://istanbul29may.files.wordpress.com/2011/10/treasure-box.jpg";
@@ -148,15 +158,19 @@ angular.module('learningGames', ['ngRoute'])
 
 	$scope.shown =function(compName)
 	{
-		var lastQuestion = questionaire.questIndex >= questionaire.questions.length -1;
 		if (compName == "Prev")
 			return questionaire.questIndex != 0;
 
 		var shownButton = $scope.state != "tryAnswer"? "Help" :
-							lastQuestion? "Restart" : "Next";
+							$scope.lastQuestion()? "Restart" : "Next";
 							
 		return compName == shownButton;
 	};
+	
+	$scope.lastQuestion=function()
+	{
+		return questionaire.questIndex >= questionaire.questions.length -1;
+	}
 	
 	$scope.tryAnswer = function(index)
 	{
@@ -167,6 +181,11 @@ angular.module('learningGames', ['ngRoute'])
 		}
 		$scope.state = "tryAnswer";
 		$scope.nextButtonSize = "btn-lg";
+		
+		if (index == $scope.rightIndex)
+			questionaire.numberOfCorrectAnswers++;
+		
+		$scope.puzzleTryAnswer(index);
 		
 		//var parentDiv = $(event.currentTarget).find(".question-image").parent();
 		var parentDiv = $("#answerImageDiv" + ($scope.displayImageWithAnswer? "-Inline-" : "") + index);
@@ -208,6 +227,57 @@ angular.module('learningGames', ['ngRoute'])
 		else
 			$scope.displayQuestion(1);
 	};
+	
+	
+	//for puzzle
+	$scope.showPuzzle=function()
+	{
+		return $scope.displayImageWithAnswer; //set to false if not puzzle
+	};
+	$scope.isPuzzleCellRevealed=function(row,col)
+	{
+		//if all questions has been answered correctly (so number of revealed cells is equal to number of questions) - reveal all cells.
+		if (questionaire.questions.length == $scope.numOfRevealedPuzzleCells())
+			return true;
+		
+		return $scope.cellsRevealed[row + "_" + col];
+	};
+	$scope.numOfRevealedPuzzleCells=function()
+	{
+		return Object.keys($scope.cellsRevealed).length;
+	};
+	$scope.puzzleTryAnswer=function(index){
+		if (!$scope.showPuzzle())
+			return;
+		
+		if (index == $scope.rightIndex)
+		{
+			$('html, body').stop().animate({
+				'scrollTop': $("#puzzleDiv").offset().top
+				}, 900, 'swing', function () {
+					//prevent duplicate callbacks
+					if (questionaire.numberOfCorrectAnswers <= $scope.numOfRevealedPuzzleCells())
+						return;
+					
+					var newHiddenCell = "";
+					do{
+						newHiddenCell = Math.floor((Math.random()*4)+1) + "_" + Math.floor((Math.random()*5)+1);
+					}
+					while ($scope.cellsRevealed[newHiddenCell] && $scope.numOfRevealedPuzzleCells() < 20);
+					$scope.$apply(function(){
+						if (newHiddenCell.length)
+							$scope.cellsRevealed[newHiddenCell] = true;
+					});
+			});
+		}
+	};
+	$scope.puzzleRestart=function()
+	{
+		$scope.cellsRevealed = {};
+	}
+	
+	//testing only:
+	game.rightImage.src = "img/ajax-loader.gif";
 	
 }])
 .controller('questListCtrl', function($scope) {
