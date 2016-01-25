@@ -1,0 +1,31 @@
+<div class="panel panel-primary" style="direction:rtl">
+  <div class="panel-heading">
+  <div class="row">
+	  <div class="col-xs-3"><a role="button" class="btn btn-info" ng-click="saveGame()">שמור</a></div>
+	  <div class="col-xs-6"><input type="text" class="form-control" value="{{game.name}}"/></div>
+	  <div class="col-xs-3">שם המשחק:</div>
+	 </div>
+  </div>
+  <div class="panel-body" style="direction:rtl;padding:0">
+   <div class="row" ng-repeat="imageData in imagesData">
+	  <div class="col-xs-2"></div>
+	  <div class="col-xs-5">
+        <a ng-click="chooseImage(imageData)" class="thumbnail">
+		  <div class="caption">
+			<h3>{{imageData.displayName}}</h3>
+		  </div>
+          <img ng-src="{{imageData.imageUrl}}" alt="{{imageData.displayName}}">
+        </a>
+		<div ng-show="chosenImageData == imageData">
+			<!--gcse:searchbox gname="{{imageData.name}}" disableWebSearch="true"></gcse:searchbox>
+			<gcse:searchresults gname="{{imageData.name}}" defaultToImageSearch="true" safeSearch="active"></gcse:searchresults>
+
+			<br/>test:<br/-->
+			<!--div id="search-box-{{imageData.name}}"/-->
+			<input type="text" ng-model="imageData.imageUrl"/>
+			<div id="search-results-{{imageData.name}}"/>
+		</div>
+	  </div>
+   </div>
+  </div>
+</div>
