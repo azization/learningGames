@@ -13,6 +13,10 @@ angular.module('learningGames', ['ngRoute'])
 		controller:'questListCtrl',
 		templateUrl:'list.htm'
 	})
+	.when('/createGame', {
+		controller:'createGameCtrl',
+		templateUrl:'CreateGame.html'
+	})
 	.when('/:quest?/:game?', {
 		controller:'MainCtrl',
 		templateUrl:'practice.htm'
@@ -72,16 +76,7 @@ angular.module('learningGames', ['ngRoute'])
 
 		//in case of restart questions
 		if (questionaire.questIndex < 0 || questionaire.questIndex >= questionaire.questions.length)
-		{
 			questionaire.questIndex = 0;
-		}
-		if (questionaire.questIndex == 0)
-		{
-			//TODO: better handle "previous" button - decreasing only previous correct answers
-			questionaire.numberOfCorrectAnswers = 0;
-			$scope.puzzleRestart();
-		}
-
 		
 		if (!$scope.alert || $scope.alert.mode != "info")
 		{
@@ -126,20 +121,10 @@ angular.module('learningGames', ['ngRoute'])
 	loadItemInto("questions", questionaire.name, function(data){
 		$scope.$apply(function(){
 			questionaire.questions = data;
-			//if all answers are shorter than 10 characters - we can display images in the same line as the answers
-			var maxLen = 0;
-			for (var index = 0; index < questionaire.questions.length; index++)
-			{
-				var q = questionaire.questions[index];
-				maxLen = Math.max(q.Answer.length, q.Wrong1.length, q.Wrong2.length, q.Wrong3.length);
-			}
-			$scope.displayImageWithAnswer = maxLen < 10;
-			//display first question
 			$scope.displayQuestion(0);
 		});
 	});
 
-	
 	loadItemInto("game", $scope.game.name, function(data){
 		$scope.$apply(function(){
 			//$scope.game.questImage.src = "http://istanbul29may.files.wordpress.com/2011/10/treasure-box.jpg";
@@ -158,19 +143,17 @@ angular.module('learningGames', ['ngRoute'])
 
 	$scope.shown =function(compName)
 	{
-		if (compName == "Prev")
-			return questionaire.questIndex != 0;
+		if (compName == "Prev" && questionaire.questIndex == 0)
+				return "none";
 
-		var shownButton = $scope.state != "tryAnswer"? "Help" :
-							$scope.lastQuestion()? "Restart" : "Next";
-							
-		return compName == shownButton;
+		if (compName == "Next" && questionaire.questIndex >= questionaire.questions.length -1)
+				return "none";
+				
+		if (compName == "Restart" && questionaire.questIndex !=  questionaire.questions.length -1)
+				return "none";
+
+		return "inherit";
 	};
-	
-	$scope.lastQuestion=function()
-	{
-		return questionaire.questIndex >= questionaire.questions.length -1;
-	}
 	
 	$scope.tryAnswer = function(index)
 	{
@@ -182,13 +165,8 @@ angular.module('learningGames', ['ngRoute'])
 		$scope.state = "tryAnswer";
 		$scope.nextButtonSize = "btn-lg";
 		
-		if (index == $scope.rightIndex)
-			questionaire.numberOfCorrectAnswers++;
-		
-		$scope.puzzleTryAnswer(index);
-		
 		//var parentDiv = $(event.currentTarget).find(".question-image").parent();
-		var parentDiv = $("#answerImageDiv" + ($scope.displayImageWithAnswer? "-Inline-" : "") + index);
+		var parentDiv = $("#answerImageDiv" + index);
 		parentDiv.fadeOut(140, 'swing', function(){
 			//$(event.currentTarget).find(".question-image").hide();
 			$scope.$apply(function() {
@@ -213,71 +191,7 @@ angular.module('learningGames', ['ngRoute'])
 			});
 			parentDiv.fadeIn(140, 'swing');
 		});
-	};
-	
-	$scope.highlightRightAnswer = function()
-	{
-		$scope.answerRowClasses[$scope.rightIndex] = "success";
-	};
-
-	$scope.questButtonClicked = function()
-	{
-		if ($scope.shown("Help"))
-			$scope.highlightRightAnswer();
-		else
-			$scope.displayQuestion(1);
-	};
-	
-	
-	//for puzzle
-	$scope.showPuzzle=function()
-	{
-		return $scope.displayImageWithAnswer; //set to false if not puzzle
-	};
-	$scope.isPuzzleCellRevealed=function(row,col)
-	{
-		//if all questions has been answered correctly (so number of revealed cells is equal to number of questions) - reveal all cells.
-		if (questionaire.questions.length == $scope.numOfRevealedPuzzleCells())
-			return true;
-		
-		return $scope.cellsRevealed[row + "_" + col];
-	};
-	$scope.numOfRevealedPuzzleCells=function()
-	{
-		return Object.keys($scope.cellsRevealed).length;
-	};
-	$scope.puzzleTryAnswer=function(index){
-		if (!$scope.showPuzzle())
-			return;
-		
-		if (index == $scope.rightIndex)
-		{
-			$('html, body').stop().animate({
-				'scrollTop': $("#puzzleDiv").offset().top
-				}, 900, 'swing', function () {
-					//prevent duplicate callbacks
-					if (questionaire.numberOfCorrectAnswers <= $scope.numOfRevealedPuzzleCells())
-						return;
-					
-					var newHiddenCell = "";
-					do{
-						newHiddenCell = Math.floor((Math.random()*4)+1) + "_" + Math.floor((Math.random()*5)+1);
-					}
-					while ($scope.cellsRevealed[newHiddenCell] && $scope.numOfRevealedPuzzleCells() < 20);
-					$scope.$apply(function(){
-						if (newHiddenCell.length)
-							$scope.cellsRevealed[newHiddenCell] = true;
-					});
-			});
-		}
-	};
-	$scope.puzzleRestart=function()
-	{
-		$scope.cellsRevealed = {};
 	}
-	
-	//testing only:
-	game.rightImage.src = "img/ajax-loader.gif";
 	
 }])
 .controller('questListCtrl', function($scope) {
@@ -301,8 +215,8 @@ angular.module('learningGames', ['ngRoute'])
 	$scope.loadItems($scope, "public");
 })
 .controller('loginCtrl',
-	['$scope', '$location', '$routeParams', 'userCredentials',
-	function($scope, $location, $routeParams, userCredentials)
+	['$scope', '$location', '$routeParams', 'userCredentials', 'ActionService',
+	function($scope, $location, $routeParams, userCredentials, ActionService)
 	{
 		$scope.isNew = !! $routeParams["new"];
 		$scope.signInTabClass = $scope.isNew? "" : "active";
@@ -311,6 +225,9 @@ angular.module('learningGames', ['ngRoute'])
 		$scope.submitButtonLabel = $scope.isNew? "צור חשבון" : "התחבר";
 		$scope.confirmPasswordVisibility = $scope.isNew? "visible" : "hidden";
 		$scope.login = function(){
+			//return ActionService.login($scope.isNew, $scope.userName, $scope.userPassword).then(
+			//	function(response){
+			//		var data = response.data;
 			$.post( "Login.php", {action: $scope.isNew? "new" : "login", email: encodeURIComponent($scope.userName), pwd: encodeURIComponent($scope.userPassword)}, function( data ) {
 				//alert(data);
 				var err = getInnerXml(data, "Error");
@@ -320,6 +237,7 @@ angular.module('learningGames', ['ngRoute'])
 				else if (resp != null)
 				{
 					userCredentials.userName = $scope.userName;
+					userCredentials.loggedIn = true;
 					$("#userLoginLink").text(userCredentials.userName);
 					$scope.$apply(function(){
 						$location.path('').replace();
@@ -327,6 +245,10 @@ angular.module('learningGames', ['ngRoute'])
 				}
 				else document.getElementById("loginErrorDiv").innerHTML="תשובה לא מזוהה מהשרת";
 			});
+			//	}, function (reason){
+			//		document.getElementById("loginErrorDiv").innerHTML="שגיאה בשרת";
+			//	}
+			//);
 		};
 	}]
 )
