@@ -1,7 +1,7 @@
 angular.module('learningGames')
     .factory('ActionService', ['$http', '$q', function ($http, $q) {
-	var urlPrefix = "http://azization.awardspace.info/Games/";
 	var actionService = {
+		urlPrefix: "http://azization.awardspace.info/Games/",
 		httpGet: function(params){
 			return $http.get(urlPrefix + "php/Actions.php", {params: params});
 		},
