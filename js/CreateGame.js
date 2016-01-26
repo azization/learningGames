@@ -97,11 +97,24 @@ google.setOnLoadCallback(onLoad);
 			action: "save",
 			type: "game",
 			name: self.game.name,
-			values: [
+			values: JSON.stringify([
 				{Name: "Question Image", Value: self.imagesData[0].imageUrl},
 				{Name: "Right Image", Value: self.imagesData[1].imageUrl},
 				{Name: "Wrong Image", Value: self.imagesData[2].imageUrl}
-			]
+			])
+		}).then(function(response){
+			if (response && response.data && response.data.status == "ok")
+				bootbox.confirm("המשחק נשמר. האם תרצה\י לשחק בו?", function(result){
+					if (result){
+						$scope.$apply(function(){
+							$location.path("");
+						});
+					}
+				});
+			else
+				bootbox.alert("שגיאה בשמירה");
+		}, function(reason){
+			bootbox.alert("שגיאה בשמירה");
 		});
 	};
 
