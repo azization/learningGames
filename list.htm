@@ -1,9 +1,9 @@
 
 
 <ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#">ה{{listItemTypePlural}} שלי</a></li>
-  <li role="presentation"><a href="#">Profile</a></li>
-  <li role="presentation"><a href="#">Messages</a></li>
+  <li role="presentation"><a href="#/{{lType}}Create">צור {{listItemType}}</a></li>
+  <li role="presentation" ng-class="itemsScope == 'private'? 'active' : ''"><a ng-href="#/{{lType}}List/private">ה{{listItemTypePlural}} שלי</a></li>
+  <li role="presentation" ng-class="itemsScope == 'public'? 'active' : ''"><a ng-href="#/{{lType}}List/public">כל ה{{listItemTypePlural}}</a></li>
 </ul>
 
     <div class="row">
