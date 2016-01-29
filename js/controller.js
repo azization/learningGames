@@ -5,17 +5,21 @@ angular.module('learningGames', ['ngRoute'])
 		controller:'loginCtrl',
 		templateUrl:'UserLogin.htm'
 	})
-	.when('/gameList', {
+	.when('/gameList/:itemsScope?', {
 		controller:'gameListCtrl',
 		templateUrl:'list.htm'
 	})
-	.when('/questList', {
+	.when('/questList/:itemsScope?', {
 		controller:'questListCtrl',
 		templateUrl:'list.htm'
 	})
-	.when('/createGame', {
+	.when('/gameCreate/:game?', {
 		controller:'createGameCtrl',
 		templateUrl:'CreateGame.html'
+	})
+	.when('/questCreate/:quest?', {
+		controller:'createQuestCtrl',
+		templateUrl:'CreateQuest.html'
 	})
 	.when('/:quest?/:game?', {
 		controller:'MainCtrl',
@@ -37,9 +41,12 @@ angular.module('learningGames', ['ngRoute'])
 	var questionaire = { };
 	
 	questionaire.set = function(name) {
-		this.name = name;
-		this.questIndex = 0;
-		this.questions = [];
+		questionaire.init(this, name);
+	};
+	questionaire.init = function(quest, name) {
+		quest.name = name;
+		quest.questIndex = 0;
+		quest.questions = [];
 	};
 	questionaire.set("חיסור");
 	return questionaire;
@@ -284,26 +291,37 @@ angular.module('learningGames', ['ngRoute'])
 	game.rightImage.src = "img/ajax-loader.gif";
 	
 }])
-.controller('questListCtrl', function($scope) {
+.controller('questListCtrl', ['$routeParams', '$scope', function($routeParams, $scope) {
 	$scope.items = [];
 	$scope.listType = "questions";
+	$scope.lType = "quest";
 	$scope.listItemType = "שאלון";
 	$scope.listItemTypePlural = "שאלונים";
+	$scope.itemsScope = $routeParams.itemsScope;
+	if ($scope.itemsScope != "private")
+		$scope.itemsScope = "public";
+	
 	$scope.itemChosen = function(name) {return "#/" + name;}
+	
 	$scope.loadItems = loadItems;
-	$scope.loadItems($scope, "public");
-})
-.controller('gameListCtrl', function($scope) {
+	$scope.loadItems($scope, $scope.itemsScope);
+}])
+.controller('gameListCtrl', ['$routeParams', '$scope', function($routeParams, $scope) {
 	if (!$scope.items)
 		$scope.items = [];
 	$scope.listType = "game";
+	$scope.lType = "game";
 	$scope.listItemType = "משחק";
 	$scope.listItemTypePlural = "משחקים";
+	$scope.itemsScope = $routeParams.itemsScope;
+	if ($scope.itemsScope != "private")
+		$scope.itemsScope = "public";
+	
 	$scope.itemChosen = function(name) {return "#/Current/" + name;}
 	
 	$scope.loadItems = loadItems;
-	$scope.loadItems($scope, "public");
-})
+	$scope.loadItems($scope, $scope.itemsScope);
+}])
 .controller('loginCtrl',
 	['$scope', '$location', '$routeParams', 'userCredentials', 'ActionService',
 	function($scope, $location, $routeParams, userCredentials, ActionService)
@@ -318,7 +336,7 @@ angular.module('learningGames', ['ngRoute'])
 			//return ActionService.login($scope.isNew, $scope.userName, $scope.userPassword).then(
 			//	function(response){
 			//		var data = response.data;
-			$.post( "Login.php", {action: $scope.isNew? "new" : "login", email: encodeURIComponent($scope.userName), pwd: encodeURIComponent($scope.userPassword)}, function( data ) {
+			$.post(ActionService.urlPrefix + "Login.php", {action: $scope.isNew? "new" : "login", email: encodeURIComponent($scope.userName), pwd: encodeURIComponent($scope.userPassword)}, function( data ) {
 				//alert(data);
 				var err = getInnerXml(data, "Error");
 				var resp = getInnerXml(data, "Response");
