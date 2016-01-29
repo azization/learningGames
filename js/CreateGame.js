@@ -93,7 +93,7 @@ google.setOnLoadCallback(onLoad);
 	};
 	
 	self.saveGame=function(){
-		return ActionService.httpGet({
+		return ActionService.httpPost({
 			action: "save",
 			type: "game",
 			name: self.game.name,
